@@ -2,7 +2,7 @@
 *
 *   Huffman-compressor - Trung Truong - 2019
 *
-*   File name: except.c
+*   File name: array.c
 *
 *   Description: David R. Hanson's implementation of dynamic array
 *   in C. All rights reserved to David R. Hanson. 
