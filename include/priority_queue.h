@@ -81,8 +81,8 @@ extern void *Priority_queue_top(T priority_queue);
 /*
  * Function:        Priority_queue_pop
  * Description:     Pops the node with maximum or minimum value depending on
- *                  type of heap
- * Parameters:      *   T priority_queue: pointer to struct `Priority_Queue_T`            
+ *                  type of heap. If priority queue is empty, raise Exception.
+ * Parameters:      *   T priority_queue: pointer to struct `Priority_Queue_T`  
  *                  
  * Return:          void pointer: max/min node in the queue
  */

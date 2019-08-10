@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include "../hanson/include/array.h"
 #include "../hanson/include/arrayrep.h"
+#include "../hanson/include/except.h"
 #include "../include/priority_queue.h"
 
 #define T Priority_Queue_T
@@ -24,6 +25,8 @@
 /* Macros to find left child, right child, parent index */
 #define left_child(x) 2 * x + 1
 #define right_child(x) 2 * x + 2
+
+Except_T HEAP_UNDERFLOW = { "Heap underflow" };
 
 /* structure of Priority Queue */
 struct T {
@@ -138,7 +141,7 @@ static void max_heapify(T priority_queue, int parent_index) {
     Node *parent = (Node *)Array_get(priority_queue->entries, parent_index);
     assert(parent);
 
-    int entries_length = Array_length(priority_queue->entries);
+    int entries_length = priority_queue->size;
 
     Node *largest_node = parent;
     int largest_node_index = parent_index;
@@ -168,9 +171,11 @@ static void max_heapify(T priority_queue, int parent_index) {
     }
     // Swap parent with child to maintain heap rules, call heapify recursively
     if (largest_node_index != parent_index) {
-        Node *temp = (Node *)Array_get(priority_queue->entries, largest_node_index);
-        Array_put(priority_queue->entries, parent_index, temp);
-        Array_put(priority_queue->entries, largest_node_index, parent);
+        Node deref_largest_node = *largest_node;
+        Node deref_parent_node = *parent;
+
+        Array_put(priority_queue->entries, parent_index, &deref_largest_node);
+        Array_put(priority_queue->entries, largest_node_index, &deref_parent_node);
 
         max_heapify(priority_queue, largest_node_index);
     }
@@ -185,7 +190,7 @@ static void min_heapify(T priority_queue, int parent_index) {
     Node *parent = (Node *)Array_get(priority_queue->entries, parent_index);
     assert(parent);
 
-    int entries_length = Array_length(priority_queue->entries);
+    int entries_length = priority_queue->size;
 
     Node *smallest_node = parent;
     int smallest_node_index = parent_index;
@@ -215,9 +220,11 @@ static void min_heapify(T priority_queue, int parent_index) {
     }
     // Swap parent with child to maintain heap rules, call heapify recursively
     if (smallest_node_index != parent_index) {
-        Node *temp = (Node *)Array_get(priority_queue->entries, smallest_node_index);
-        Array_put(priority_queue->entries, parent_index, temp);
-        Array_put(priority_queue->entries, smallest_node_index, parent);
+        Node deref_smallest_node = *smallest_node;
+        Node deref_parent_node = *parent;
+
+        Array_put(priority_queue->entries, parent_index, &deref_smallest_node);
+        Array_put(priority_queue->entries, smallest_node_index, &deref_parent_node);
 
         min_heapify(priority_queue, smallest_node_index);
     }
@@ -255,16 +262,31 @@ void *Priority_queue_top(T priority_queue) {
 /*
  * Function:        Priority_queue_pop
  * Description:     Pops the node with maximum or minimum value depending on
- *                  type of heap
+ *                  type of heap. If priority queue is empty, raise Exception
  * Parameters:      *   T priority_queue: pointer to struct `Priority_Queue_T`            
  *                  
  * Return:          void pointer: max/min node in the queue
  */
 void *Priority_queue_pop(T priority_queue) {
-    (void) priority_queue;
-    return NULL;
-}
+    assert(priority_queue && priority_queue->entries);
+    if (priority_queue->size == 0)  RAISE(HEAP_UNDERFLOW);
 
+    Node deref_top = *(Node *)Array_get(priority_queue->entries, 0);
+    Node deref_end = *(Node *)Array_get(priority_queue->entries, priority_queue->size - 1);
+    
+    Array_put(priority_queue->entries, 0, &deref_end);
+    Array_put(priority_queue->entries, priority_queue->size - 1, &deref_top);
+
+    priority_queue->size--;
+
+    if (priority_queue->type == 0) {
+        min_heapify(priority_queue, 0);
+    }
+    else if (priority_queue->type == 1) {
+        max_heapify(priority_queue, 0);
+    }
+    return (Node *)Array_get(priority_queue->entries, priority_queue->size);
+}
 
 // extern void Priority_queue_map(T priority_queue,
 //                       void apply(const void *key, void **value, void *cl),
