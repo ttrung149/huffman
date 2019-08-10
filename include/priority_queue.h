@@ -28,12 +28,12 @@ typedef struct T *T;
  *                  *   1 for max-heap
  *                  *   others, raises C.R.E
  *                  
- *                  unsigned int size: estimated size for the
+ *                  int size: estimated size for the
  *                  number of nodes in the queue
  * 
  * Return:          Pointer to newly created priority queue 
  */
-extern T Priority_queue_new(int type, unsigned int size);
+extern T Priority_queue_new(int type, int size);
 
 /*
  * Function:        Priority_queue_free
@@ -48,6 +48,7 @@ extern void Priority_queue_free(T *priority_queue);
  * Function:        Priority_queue_build
  * Description:     Build heap given queue and entries array
  * Parameters:      T priority_queue: pointer to struct `Priority_Queue_T`
+ *                  Array_T entries: All entries in the heap
  * Return:          void     
  */
 extern void Priority_queue_build(T priority_queue, Array_T entries);
@@ -56,9 +57,9 @@ extern void Priority_queue_build(T priority_queue, Array_T entries);
  * Function:        Priority_queue_size
  * Description:     Gets size of priority queue
  * Parameters:      T priority_queue: pointer to struct `Priority_Queue_T`
- * Return:          unsigned int
+ * Return:          int
  */
-extern unsigned int Priority_queue_size(T priority_queue);
+extern int Priority_queue_size(T priority_queue);
 
 /*
  * Function:        Priority_queue_insert
