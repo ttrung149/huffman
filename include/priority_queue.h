@@ -27,13 +27,10 @@ typedef struct T *T;
  *                  *   0 for min-heap
  *                  *   1 for max-heap
  *                  *   others, raises C.R.E
- *                  
- *                  int size: estimated size for the
- *                  number of nodes in the queue
  * 
  * Return:          Pointer to newly created priority queue 
  */
-extern T Priority_queue_new(int type, int size);
+extern T Priority_queue_new(int type);
 
 /*
  * Function:        Priority_queue_free

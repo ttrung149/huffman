@@ -25,13 +25,14 @@
 #define left_child(x) 2 * x + 1
 #define right_child(x) 2 * x + 2
 
-/* structure of Priority Queue*/
+/* structure of Priority Queue */
 struct T {
     int type;           // min-heap or max heap
+    int size;           // size of queue
     Array_T entries;    // array of node entries
 };
 
-/* structure of Node in Priority Queue entries*/
+/* structure of Node in Priority Queue entries */
 struct Node {
     void *obj;          // void pointer to the object the node contains   
     int value;          // value of priority queue indexing
@@ -39,7 +40,10 @@ struct Node {
 
 typedef struct Node Node;
 
+/* Helper function prototypes */
 static void max_heapify(T priority_queue, int parent_index);
+static void min_heapify(T priority_queue, int parent_index);
+
 // static Node *create_node_from_obj(void *obj, int value) {
 //     assert(obj);
 //     Node *new_node = malloc(sizeof(Node));
@@ -57,23 +61,17 @@ static void max_heapify(T priority_queue, int parent_index);
  *                  *   0 for min-heap
  *                  *   1 for max-heap
  *                  *   others, raises C.R.E
- *                  
- *                  int size: estimated size for the
- *                  number of nodes in the queue
  * 
  * Return:          Pointer to created priority queue 
  */
-T Priority_queue_new(int type, int size) {
+T Priority_queue_new(int type) {
     assert(type == 0 || type == 1);
     
     T priority_queue = malloc(sizeof(*priority_queue));
     assert(priority_queue != NULL);
 
-    Array_T entries = Array_new(size, sizeof(Node));
-    assert(entries != NULL);
-
     priority_queue->type = type;
-    priority_queue->entries = entries;
+    priority_queue->size = 0;
 
     return priority_queue;
 }
@@ -99,7 +97,7 @@ void Priority_queue_free(T *priority_queue) {
  */
 int Priority_queue_size(T priority_queue) {
     assert(priority_queue && priority_queue->entries);
-    return Array_length(priority_queue->entries);
+    return priority_queue->size;
 }
 
 /*
@@ -110,12 +108,21 @@ int Priority_queue_size(T priority_queue) {
  * Return:          void     
  */
 void Priority_queue_build(T priority_queue, Array_T entries) {
-    assert(priority_queue && priority_queue->entries);
-    priority_queue->entries = entries;
+    assert(priority_queue);
+    Array_T copy_entries = Array_copy(entries, Array_length(entries));
+    priority_queue->entries = copy_entries;
+    priority_queue->size = Array_length(entries);
 
     int entries_length = Array_length(priority_queue->entries);
 
+    // Build min heap if priority type is 0
     if (priority_queue->type == 0) {
+        for (int i = entries_length/2 - 1; i >= 0; i--) {
+            min_heapify(priority_queue, i);
+        }
+    }
+    // Build max heap if priority type is 1
+    else if (priority_queue->type == 1) {
         for (int i = entries_length/2 - 1; i >= 0; i--) {
             max_heapify(priority_queue, i);
         }
@@ -169,9 +176,52 @@ static void max_heapify(T priority_queue, int parent_index) {
     }
 }
 
-// static void min_heapify(T priority_queue, int index) {
+/**
+ * Static helper function to perform heapify for min heap
+ */
+static void min_heapify(T priority_queue, int parent_index) {
+    assert(priority_queue && priority_queue->entries);
 
-// }
+    Node *parent = (Node *)Array_get(priority_queue->entries, parent_index);
+    assert(parent);
+
+    int entries_length = Array_length(priority_queue->entries);
+
+    Node *smallest_node = parent;
+    int smallest_node_index = parent_index;
+
+    // Compare parent node with both left and right child if both exist
+    if (right_child(parent_index) < entries_length) {
+        Node *left = (Node *)Array_get(priority_queue->entries, left_child(parent_index));
+        Node *right = (Node *)Array_get(priority_queue->entries, right_child(parent_index));
+        
+        if (left->value < parent->value) {
+            smallest_node = left;
+            smallest_node_index = left_child(parent_index);
+        }
+        if (right->value < smallest_node->value) {
+            smallest_node = right;
+            smallest_node_index = right_child(parent_index);
+        }
+    }
+    // Compare parent node with left child if only left child exists
+    else if (left_child(parent_index) < entries_length) {
+        Node *left = (Node *)Array_get(priority_queue->entries, left_child(parent_index));
+
+        if (left->value < parent->value) {
+            smallest_node = left;
+            smallest_node_index = left_child(parent_index);
+        }
+    }
+    // Swap parent with child to maintain heap rules, call heapify recursively
+    if (smallest_node_index != parent_index) {
+        Node *temp = (Node *)Array_get(priority_queue->entries, smallest_node_index);
+        Array_put(priority_queue->entries, parent_index, temp);
+        Array_put(priority_queue->entries, smallest_node_index, parent);
+
+        min_heapify(priority_queue, smallest_node_index);
+    }
+}
 
 /*
  * Function:        Priority_queue_insert
