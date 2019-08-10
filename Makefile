@@ -49,5 +49,5 @@ clean:
 #					TESTING targets
 ################################################################# 
 
-test-priority-queue: $(PRIORITY_QUEUE) tests/test-priority-queue.c
+test-priority-queue: $(PRIORITY_QUEUE) tests/test_priority_queue.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
