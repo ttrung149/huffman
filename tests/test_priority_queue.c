@@ -60,6 +60,28 @@ int main() {
     }
     printf("%s\n", "Passed");
    
+    // Insertion test
+    printf("%s", "   - Insertion test: ");
+    for (int i = 0; i < TEST_SAMPLES; i++) {
+        Node *ptr = malloc(sizeof(Node)); // Allocatate space for node
+        ptr->value = i;
+        ptr->obj = NULL;
+        Priority_queue_insert(max_q, ptr, i);
+    }
+
+    for (int i = TEST_SAMPLES - 1; i >= 0; i--) {
+        Node *top = (Node *)Priority_queue_top(max_q);
+        int size = Priority_queue_size(max_q);
+        assert(top->value == i);
+        assert(((Node *)top->obj)->value == i);
+        assert(size == i + 1);
+    
+        Node *pop = (Node *)Priority_queue_pop(max_q);
+        free((Node*) pop->obj);
+        assert(pop->value == i);
+    }
+    printf("%s\n", "Passed");
+
     TRY
         Priority_queue_pop(max_q);
     ELSE
@@ -104,6 +126,28 @@ int main() {
         assert(size == TEST_SAMPLES - i);
     
         Node *pop = (Node *)Priority_queue_pop(min_q);
+        assert(pop->value == i);
+    }
+    printf("%s\n", "Passed");
+
+    // Insertion test
+    printf("%s", "   - Insertion test: ");
+    for (int i = TEST_SAMPLES - 1; i >= 0; i--) {
+        Node *ptr = malloc(sizeof(Node)); // Allocatate space for node
+        ptr->value = i;
+        ptr->obj = NULL;
+        Priority_queue_insert(min_q, ptr, i);
+    }
+
+    for (int i = 0; i < TEST_SAMPLES; i++)  {
+        Node *top = (Node *)Priority_queue_top(min_q);
+        int size = Priority_queue_size(min_q);
+        assert(top->value == i);
+        assert(((Node *)top->obj)->value == i);
+        assert(size == TEST_SAMPLES - i);
+    
+        Node *pop = (Node *)Priority_queue_pop(min_q);
+        free((Node*) pop->obj);
         assert(pop->value == i);
     }
     printf("%s\n", "Passed");
