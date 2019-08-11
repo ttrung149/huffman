@@ -25,6 +25,7 @@
 /* Macros to find left child, right child, parent index */
 #define left_child(x) 2 * x + 1
 #define right_child(x) 2 * x + 2
+#define parent(x) (x - 1) / 2
 
 Except_T HEAP_UNDERFLOW = { "Heap underflow" };
 
@@ -47,14 +48,14 @@ typedef struct Node Node;
 static void max_heapify(T priority_queue, int parent_index);
 static void min_heapify(T priority_queue, int parent_index);
 
-// static Node *create_node_from_obj(void *obj, int value) {
-//     assert(obj);
-//     Node *new_node = malloc(sizeof(Node));
-//     assert(new_node);
-//     new_node->obj = obj;
-//     new_node->value = value;
-//     return new_node;
-// }
+static Node *create_node_from_obj(void *obj, int value) {
+    assert(obj);
+    Node *new_node = malloc(sizeof(Node));
+    assert(new_node);
+    new_node->obj = obj;
+    new_node->value = value;
+    return new_node;
+}
 
 /*
  * Function:        Priority_queue_new
@@ -75,6 +76,7 @@ T Priority_queue_new(int type) {
 
     priority_queue->type = type;
     priority_queue->size = 0;
+    priority_queue->entries = NULL;
 
     return priority_queue;
 }
@@ -239,10 +241,63 @@ static void min_heapify(T priority_queue, int parent_index) {
  *                  
  * Return:          void
  */
-void Priority_queue_insert(T priority_queue, const void *item, unsigned int value) {
-    (void) priority_queue;
-    (void) item;
-    (void) value;
+void Priority_queue_insert(T priority_queue, void *item, unsigned int value) {
+    assert(priority_queue);
+    if (!priority_queue->entries) {
+        priority_queue->entries = Array_new(1, sizeof(Node));
+    }
+    int array_size = Array_length(priority_queue->entries);
+
+    // Dynamically allocated space for insertion if necessary
+    if (priority_queue->size >= array_size) {
+        Array_T expanded_entries = Array_copy(priority_queue->entries, 2 * array_size);
+        Array_free(&(priority_queue->entries));
+        priority_queue->entries = expanded_entries;
+    }
+
+    Node *new_node = create_node_from_obj(item, value);
+    Array_put(priority_queue->entries, priority_queue->size, new_node);
+    free(new_node);
+
+    int index = priority_queue->size;
+    priority_queue->size++;
+
+    if (priority_queue->type == 0) {
+        int parent_index = parent(index);
+        Node *parent = (Node *)Array_get(priority_queue->entries, parent_index);
+        Node *current = (Node *)Array_get(priority_queue->entries, index);
+        
+        while (index > 0 && current->value < parent->value) {
+            Node deref_parent = *parent;
+            Node deref_current = *current;
+
+            Array_put(priority_queue->entries, parent_index, &deref_current);
+            Array_put(priority_queue->entries, index, &deref_parent);
+
+            current = parent;
+            index = parent_index;
+            parent_index = parent(index);
+            parent = (Node *)Array_get(priority_queue->entries, parent_index);
+        }
+    }
+    else if (priority_queue->type == 1) {
+        int parent_index = parent(index);
+        Node *parent = (Node *)Array_get(priority_queue->entries, parent_index);
+        Node *current = (Node *)Array_get(priority_queue->entries, index);
+        
+        while (index > 0 && current->value > parent->value) {
+            Node deref_parent = *parent;
+            Node deref_current = *current;
+
+            Array_put(priority_queue->entries, parent_index, &deref_current);
+            Array_put(priority_queue->entries, index, &deref_parent);
+
+            current = parent;
+            index = parent_index;
+            parent_index = parent(index);
+            parent = (Node *)Array_get(priority_queue->entries, parent_index);
+        }
+    }
 }
 
 /*

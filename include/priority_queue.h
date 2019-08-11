@@ -67,7 +67,7 @@ extern int Priority_queue_size(T priority_queue);
  *                  
  * Return:          void
  */
-extern void Priority_queue_insert(T priority_queue, const void *item, unsigned int value);
+extern void Priority_queue_insert(T priority_queue, void *item, unsigned int value);
 
 /*
  * Function:        Priority_queue_top
