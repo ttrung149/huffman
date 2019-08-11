@@ -31,8 +31,12 @@ HANSON_ARRAY =	hanson/src/array.c \
 				hanson/src/except.c
 
 # Implemented data structures
-PRIORITY_QUEUE = 	$(HANSON_ARRAY) \
-					src/priority_queue.c
+PRIORITY_QUEUE =$(HANSON_ARRAY) \
+				src/priority_queue.c
+
+HUFFMAN_TREE = 	$(PRIORITY_QUEUE) \
+				$(HANSON_TABLE) \
+				src/huffman_tree.c
 
 .PHONY: all clean
 
@@ -50,4 +54,7 @@ clean:
 ################################################################# 
 
 test-priority-queue: $(PRIORITY_QUEUE) tests/test_priority_queue.c
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+test-huffman-tree: $(HUFFMAN_TREE) tests/test_huffman_tree.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
