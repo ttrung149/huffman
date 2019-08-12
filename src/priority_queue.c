@@ -163,8 +163,10 @@ static void max_heapify(T priority_queue, int parent_index)
     // Compare parent node with both left and right child if both exist
     if (right_child(parent_index) < entries_length)
     {
-        Node *left = (Node *)Array_get(priority_queue->entries, left_child(parent_index));
-        Node *right = (Node *)Array_get(priority_queue->entries, right_child(parent_index));
+        Node *left = (Node *)Array_get(priority_queue->entries,
+                                       left_child(parent_index));
+        Node *right = (Node *)Array_get(priority_queue->entries,
+                                        right_child(parent_index));
 
         if (left->value > parent->value)
         {
@@ -219,8 +221,10 @@ static void min_heapify(T priority_queue, int parent_index)
     // Compare parent node with both left and right child if both exist
     if (right_child(parent_index) < entries_length)
     {
-        Node *left = (Node *)Array_get(priority_queue->entries, left_child(parent_index));
-        Node *right = (Node *)Array_get(priority_queue->entries, right_child(parent_index));
+        Node *left = (Node *)Array_get(priority_queue->entries,
+                                       left_child(parent_index));
+        Node *right = (Node *)Array_get(priority_queue->entries,
+                                        right_child(parent_index));
 
         if (left->value < parent->value)
         {
@@ -236,7 +240,8 @@ static void min_heapify(T priority_queue, int parent_index)
     // Compare parent node with left child if only left child exists
     else if (left_child(parent_index) < entries_length)
     {
-        Node *left = (Node *)Array_get(priority_queue->entries, left_child(parent_index));
+        Node *left = (Node *)Array_get(priority_queue->entries,
+                                       left_child(parent_index));
 
         if (left->value < parent->value)
         {
@@ -362,7 +367,8 @@ void *Priority_queue_pop(T priority_queue)
         RAISE(HEAP_UNDERFLOW);
 
     Node deref_top = *(Node *)Array_get(priority_queue->entries, 0);
-    Node deref_end = *(Node *)Array_get(priority_queue->entries, priority_queue->size - 1);
+    Node deref_end = *(Node *)Array_get(priority_queue->entries,
+                                        priority_queue->size - 1);
 
     Array_put(priority_queue->entries, 0, &deref_end);
     Array_put(priority_queue->entries, priority_queue->size - 1, &deref_top);
