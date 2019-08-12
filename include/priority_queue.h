@@ -17,6 +17,16 @@
 #ifndef PRIORITY_QUEUE_INCLUDED
 #define PRIORITY_QUEUE_INCLUDED
 #define T Priority_Queue_T
+
+/* structure of Node in Priority Queue entries */
+struct Node
+{
+    void *obj; // void pointer to the object the node contains
+    int value; // value of priority queue indexing
+};
+
+typedef struct Node Node;
+
 typedef struct T *T;
 
 /*

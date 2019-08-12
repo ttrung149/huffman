@@ -30,14 +30,6 @@ struct T
     Huffman_node *root;
 };
 
-/* structure of Node in Priority Queue entries */
-struct Node
-{
-    void *obj; // void pointer to the object the node contains
-    int value; // value of priority queue indexing
-};
-typedef struct Node Node;
-
 /* structure of the encoded value in encoding table */
 struct Encoded_value
 {

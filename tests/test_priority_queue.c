@@ -15,14 +15,6 @@
 #include "../hanson/include/except.h"
 #include "../include/priority_queue.h"
 
-/* structure of Node in Priority Queue entries*/
-struct Node {
-    void *obj;          // void pointer to the object the node contains   
-    int value;          // value of priority queue indexing
-};
-
-typedef struct Node Node;
-
 int main() {
     const int TEST_SAMPLES = 100000;
 

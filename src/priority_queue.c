@@ -37,15 +37,6 @@ struct T
     Array_T entries; // array of node entries
 };
 
-/* structure of Node in Priority Queue entries */
-struct Node
-{
-    void *obj; // void pointer to the object the node contains
-    int value; // value of priority queue indexing
-};
-
-typedef struct Node Node;
-
 /* Helper function prototypes */
 static void max_heapify(T priority_queue, int parent_index);
 static void min_heapify(T priority_queue, int parent_index);
