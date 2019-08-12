@@ -24,7 +24,6 @@ struct Node
     void *obj; // void pointer to the object the node contains
     int value; // value of priority queue indexing
 };
-
 typedef struct Node Node;
 
 typedef struct T *T;

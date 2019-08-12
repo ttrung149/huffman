@@ -21,14 +21,6 @@ struct Node
 };
 typedef struct Node Node;
 
-/* structure of the encoded value in encoding table */
-struct Encoded_value
-{
-    uint64_t bit_value;
-    int bit_length;
-};
-typedef struct Encoded_value Encoded_value;
-
 int main()
 {
     Array_T array = Array_new(6, sizeof(Node));

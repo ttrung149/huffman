@@ -30,14 +30,6 @@ struct T
     Huffman_node *root;
 };
 
-/* structure of the encoded value in encoding table */
-struct Encoded_value
-{
-    uint64_t bit_value;
-    int bit_length;
-};
-typedef struct Encoded_value Encoded_value;
-
 /* Helper function prototypes */
 static void Huffman_tree_postorder_free(Huffman_node *root);
 static void add_leaf_to_table(Huffman_node *root,

@@ -28,8 +28,15 @@ struct Huffman_node
     Huffman_node *left_node;
     Huffman_node *right_node;
 };
-
 typedef struct T *T;
+
+/* structure of the encoded value in encoding table */
+struct Encoded_value
+{
+    uint64_t bit_value;
+    int bit_length;
+};
+typedef struct Encoded_value Encoded_value;
 
 /*
  * Function:        Huffman_tree_new
