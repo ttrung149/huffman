@@ -18,6 +18,17 @@
 #ifndef HUFFMAN_TREE_INCLUDED
 #define HUFFMAN_TREE_INCLUDED
 #define T Huffman_Tree_T
+
+/* structure of a Huffman Node */
+typedef struct Huffman_node Huffman_node;
+struct Huffman_node
+{
+    int frequency;
+    char key;
+    Huffman_node *left_node;
+    Huffman_node *right_node;
+};
+
 typedef struct T *T;
 
 /*
@@ -53,6 +64,14 @@ extern void Huffman_tree_build(T huffman_tree, Array_T entries);
  * Return           Table_T (pointer to struct `Table_T`)
  */
 extern Table_T Huffman_tree_create_encoding_table(T huffman_tree);
+
+/*
+ * Function:        Huffman_tree_get_root
+ * Description:     Returns the root of Huffman Tree
+ * Parameters:      T huffman_tree: pointer to struct `Huffman_Tree_T`
+ * Return           Pointer to struct `Huffman_node`
+ */
+extern Huffman_node *Huffman_tree_get_root(T huffman_tree);
 
 #undef T
 #endif
