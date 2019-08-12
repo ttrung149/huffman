@@ -286,12 +286,14 @@ void Priority_queue_insert(T priority_queue, void *item, unsigned int value)
     int index = priority_queue->size;
     priority_queue->size++;
 
+    // Min-heap
     if (priority_queue->type == 0)
     {
         int parent_index = parent(index);
         Node *parent = (Node *)Array_get(priority_queue->entries, parent_index);
         Node *current = (Node *)Array_get(priority_queue->entries, index);
 
+        // swap inserted node with parent until heap order is achieved
         while (index > 0 && current->value < parent->value)
         {
             Node deref_parent = *parent;
@@ -306,12 +308,14 @@ void Priority_queue_insert(T priority_queue, void *item, unsigned int value)
             parent = (Node *)Array_get(priority_queue->entries, parent_index);
         }
     }
+    // Max heap
     else if (priority_queue->type == 1)
     {
         int parent_index = parent(index);
         Node *parent = (Node *)Array_get(priority_queue->entries, parent_index);
         Node *current = (Node *)Array_get(priority_queue->entries, index);
 
+        // swap inserted node with parent until heap order is achieved
         while (index > 0 && current->value > parent->value)
         {
             Node deref_parent = *parent;

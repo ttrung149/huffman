@@ -12,14 +12,7 @@
 #include <stdio.h>
 #include "../hanson/include/array.h"
 #include "../include/huffman_tree.h"
-
-/* structure of Node in Priority Queue entries*/
-struct Node
-{
-    void *obj; // void pointer to the object the node contains
-    int value; // value of priority queue indexing
-};
-typedef struct Node Node;
+#include "../include/priority_queue.h"
 
 int main()
 {
