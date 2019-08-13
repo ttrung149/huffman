@@ -12,6 +12,7 @@
 *
 ****************************************************************/
 
+#include <stdint.h>
 #include "../hanson/include/array.h"
 
 #ifndef PRIORITY_QUEUE_INCLUDED
