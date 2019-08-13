@@ -13,11 +13,12 @@
 ****************************************************************/
 
 #include "../hanson/include/array.h"
-#include "../hanson/include/table.h"
 
 #ifndef HUFFMAN_TREE_INCLUDED
 #define HUFFMAN_TREE_INCLUDED
 #define T Huffman_Tree_T
+
+#define MAX_NUM_CHAR 256
 
 /* structure of a Huffman Node */
 typedef struct Huffman_node Huffman_node;
@@ -68,9 +69,9 @@ extern void Huffman_tree_build(T huffman_tree, Array_T entries);
  * Description:     Builds a dictionary with fle characters as key and binary
  *                  encoding as value
  * Parameters:      T huffman_tree: pointer to struct `Huffman_Tree_T`
- * Return           Table_T (pointer to struct `Table_T`)
+ * Return           Array_T (pointer to struct `Array_T`)
  */
-extern Table_T Huffman_tree_create_encoding_table(T huffman_tree);
+extern Array_T Huffman_tree_create_encoding_table(T huffman_tree);
 
 /*
  * Function:        Huffman_tree_get_root

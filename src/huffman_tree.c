@@ -16,7 +16,6 @@
 #include <stdlib.h>
 #include "../hanson/include/array.h"
 #include "../hanson/include/arrayrep.h"
-#include "../hanson/include/table.h"
 #include "../hanson/include/except.h"
 #include "../include/priority_queue.h"
 #include "../include/huffman_tree.h"
@@ -26,19 +25,14 @@
 /* structure of Huffman Tree */
 struct T
 {
-    Table_T encoding_table;
+    Array_T encoding_table;
     Huffman_node *root;
 };
 
 /* Helper function prototypes */
 static void Huffman_tree_postorder_free(Huffman_node *root);
 static void add_leaf_to_table(Huffman_node *root,
-                              Table_T encoding, int length, uint64_t value);
-static void free_each_encoded_val(const void *key, void **count, void *cl) {
-    (void) key;
-    (void) cl;
-	free(*count);
-}
+                              Array_T encoding, int length, uint64_t value);
 
 /*
  * Function:        Huffman_tree_new
@@ -70,8 +64,7 @@ void Huffman_tree_free(T *huffman_tree)
 
     if ((*huffman_tree)->encoding_table)
     {
-        Table_map(((*huffman_tree)->encoding_table), free_each_encoded_val, NULL);
-        Table_free(&((*huffman_tree)->encoding_table));
+        Array_free(&((*huffman_tree)->encoding_table));
     }
     free(*huffman_tree);
 }
@@ -130,15 +123,16 @@ void Huffman_tree_build(T huffman_tree, Array_T entries)
  * Description:     Builds a dictionary with fle characters as key and binary
  *                  encoding as value
  * Parameters:      T huffman_tree: pointer to struct `Huffman_Tree_T`
- * Return           Table_T (pointer to struct `Table_T`)
+ * Return           Array_T (pointer to struct `Array_T`)
  */
-Table_T Huffman_tree_create_encoding_table(T huffman_tree)
+Array_T Huffman_tree_create_encoding_table(T huffman_tree)
 {
-    Table_T encoding = Table_new(0, NULL, NULL);
+    assert(huffman_tree->root);
+    Array_T encoding = Array_new(MAX_NUM_CHAR, sizeof(Encoded_value));
     add_leaf_to_table(huffman_tree->root, encoding, 0, 0);
 
     if (huffman_tree->encoding_table)
-        Table_free(&huffman_tree->encoding_table);
+        Array_free(&huffman_tree->encoding_table);
     huffman_tree->encoding_table = encoding;
 
     return huffman_tree->encoding_table;
@@ -146,7 +140,7 @@ Table_T Huffman_tree_create_encoding_table(T huffman_tree)
 
 // Helper function to add leaf node to encoding table
 static void add_leaf_to_table(Huffman_node *root,
-                              Table_T encoding, int length, uint64_t value)
+                              Array_T encoding, int length, uint64_t value)
 {
     if (!(root->left_node) && !(root->right_node))
     {
@@ -154,8 +148,8 @@ static void add_leaf_to_table(Huffman_node *root,
         assert(encoded_val);
         encoded_val->bit_value = value;
         encoded_val->bit_length = length;
-        Table_put(encoding, &(root->key), encoded_val);
-
+        Array_put(encoding, (int)(root->key), encoded_val);
+        free(encoded_val);
         return;
     }
     add_leaf_to_table(root->left_node, encoding,
@@ -172,6 +166,6 @@ static void add_leaf_to_table(Huffman_node *root,
  */
 Huffman_node *Huffman_tree_get_root(T huffman_tree)
 {
-    assert(huffman_tree);
+    assert(huffman_tree && huffman_tree->root);
     return huffman_tree->root;
 }

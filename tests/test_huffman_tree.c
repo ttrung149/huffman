@@ -80,19 +80,19 @@ int main()
 
     Huffman_Tree_T a = Huffman_tree_new();
     Huffman_tree_build(a, array);
-    Table_T encoding = Huffman_tree_create_encoding_table(a);
+    Array_T encoding = Huffman_tree_create_encoding_table(a);
 
-    Encoded_value *test_1 = (Encoded_value *)Table_get(encoding, &(obj_1->key));
+    Encoded_value *test_1 = (Encoded_value *)Array_get(encoding, (int)'a');
     printf("Obj 1's value in encoding table: %llu \n", test_1->bit_value);
-    Encoded_value *test_2 = (Encoded_value *)Table_get(encoding, &(obj_2->key));
+    Encoded_value *test_2 = (Encoded_value *)Array_get(encoding, (int)'b');
     printf("Obj 2's value in encoding table: %llu \n", test_2->bit_value);
-    Encoded_value *test_3 = (Encoded_value *)Table_get(encoding, &(obj_3->key));
+    Encoded_value *test_3 = (Encoded_value *)Array_get(encoding, (int)'c');
     printf("Obj 3's value in encoding table: %llu \n", test_3->bit_value);
-    Encoded_value *test_4 = (Encoded_value *)Table_get(encoding, &(obj_4->key));
+    Encoded_value *test_4 = (Encoded_value *)Array_get(encoding, (int)'d');
     printf("Obj 4's value in encoding table: %llu \n", test_4->bit_value);
-    Encoded_value *test_5 = (Encoded_value *)Table_get(encoding, &(obj_5->key));
+    Encoded_value *test_5 = (Encoded_value *)Array_get(encoding, (int)'e');
     printf("Obj 5's value in encoding table: %llu \n", test_5->bit_value);
-    Encoded_value *test_6 = (Encoded_value *)Table_get(encoding, &(obj_6->key));
+    Encoded_value *test_6 = (Encoded_value *)Array_get(encoding, (int)'f');
     printf("Obj 6's value in encoding table: %llu \n", test_6->bit_value);
 
     Huffman_node *root = Huffman_tree_get_root(a);
