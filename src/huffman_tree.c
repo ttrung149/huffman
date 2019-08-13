@@ -128,6 +128,8 @@ void Huffman_tree_build(T huffman_tree, Array_T entries)
 Array_T Huffman_tree_create_encoding_table(T huffman_tree)
 {
     assert(huffman_tree->root);
+    
+    // Allocate dictionary as an array of capacity 256
     Array_T encoding = Array_new(MAX_NUM_CHAR, sizeof(Encoded_value));
     add_leaf_to_table(huffman_tree->root, encoding, 0, 0);
 
@@ -142,6 +144,7 @@ Array_T Huffman_tree_create_encoding_table(T huffman_tree)
 static void add_leaf_to_table(Huffman_node *root,
                               Array_T encoding, int length, uint64_t value)
 {
+    // Base case: leaf node
     if (!(root->left_node) && !(root->right_node))
     {
         Encoded_value *encoded_val = malloc(sizeof(Encoded_value));
@@ -152,6 +155,7 @@ static void add_leaf_to_table(Huffman_node *root,
         free(encoded_val);
         return;
     }
+    // Recursively calculate encoding value til leave node is reached
     add_leaf_to_table(root->left_node, encoding,
                       length + 1, value << 1);
     add_leaf_to_table(root->right_node, encoding,

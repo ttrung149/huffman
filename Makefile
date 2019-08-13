@@ -35,11 +35,15 @@ PRIORITY_QUEUE =$(HANSON_ARRAY) \
 				src/priority_queue.c
 
 HUFFMAN_TREE = 	$(PRIORITY_QUEUE) \
-				$(HANSON_TABLE) \
 				src/huffman_tree.c
 
+# Implemented modules
 BIT_PACK	 =	hanson/src/except.c \
 				src/bitpack.c
+
+UTILS		 =	$(HUFFMAN_TREE) \
+				$(BIT_PACK)	\
+				src/utils.c
 
 .PHONY: all clean
 
@@ -63,4 +67,7 @@ test-huffman-tree: $(HUFFMAN_TREE) tests/test_huffman_tree.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 test-bitpack: $(BIT_PACK) tests/test_bitpack.c
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+test-utils: $(UTILS) tests/test_utils.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
