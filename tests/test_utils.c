@@ -40,10 +40,10 @@ int main() {
     FILE *compressed = fopen("tests/test_compressed.txt", "r");
     
     // Decompress sample file to test_decompressed
-    uint64_t total_num_bits = read_total_num_bits(outfile);
+    uint64_t total_num_bits = read_total_num_bits(compressed);
 
     printf("TOTAL NUM BITS: %"PRIu64" \n", total_num_bits);
-    Array_T entries = read_header(outfile);
+    Array_T entries = read_header(compressed);
     Huffman_Tree_T decompressed_huffman_tree = Huffman_tree_new();
     Huffman_tree_build(decompressed_huffman_tree, entries);
     Huffman_tree_create_encoding_table(decompressed_huffman_tree);
@@ -63,6 +63,5 @@ int main() {
     Array_free(&freq_array);
 
     fclose(infile);
-    fclose(outfile);
     return 0;
 }
