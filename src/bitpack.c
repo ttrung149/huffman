@@ -18,14 +18,13 @@ bool Bitpack_fitsu(uint64_t n, unsigned width)
 // Extracts bits given width and starting lsb from provided word
 uint64_t Bitpack_getu(uint64_t word, unsigned width, unsigned lsb)
 {
-        assert(lsb < 64 && width + lsb <= 64);
-        if (width == 0) 
-            return 0;
-        else if (width == 64) 
-            return word;
+        if (width == 0) return 0;
+        assert((width <= 64) && (width + lsb <= 64));
+        uint64_t temp = word;
 
-        int64_t mask = ((1 << width) - 1) << lsb;
-        return (word & mask) >> lsb;
+        temp = temp << (64 - (lsb + width));
+        temp = temp >> (64 - width);
+        return temp;
 }
 
 // Packs bits given value, width, and starting lsb to original word
