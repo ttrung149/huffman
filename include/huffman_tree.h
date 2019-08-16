@@ -36,7 +36,7 @@ typedef struct T *T;
 struct Encoded_value
 {
     uint64_t bit_value;
-    int bit_length;
+    unsigned int bit_length;
 };
 typedef struct Encoded_value Encoded_value;
 
