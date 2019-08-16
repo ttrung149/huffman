@@ -45,6 +45,9 @@ UTILS		 =	$(HUFFMAN_TREE) \
 				$(BIT_PACK)	\
 				src/utils.c
 
+MAIN		 =	$(UTILS) \
+				src/main.c
+
 .PHONY: all clean
 
 ################################################################# 
@@ -53,6 +56,9 @@ UTILS		 =	$(HUFFMAN_TREE) \
 
 # TARGET =
 # all: $(TARGET)
+huffman: $(MAIN)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
 clean:
 	rm -f *.o *~ core
 

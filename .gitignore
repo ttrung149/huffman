@@ -1,6 +1,11 @@
+# Executables
+huffman
+
 # Test files
 test-*
 test*.txt
+default_compressed
+default_decompressed
 
 # Mac
 .DS_Store
