@@ -4,7 +4,7 @@ A lossless compressor and decompressor using Huffman encoding algorithm
 
 ## Installing
 
-Clone this repository, change directory to the project and run
+Clone this repository, change directory to the project folder and run
 
 ```sh
 make huffman
@@ -29,10 +29,21 @@ Input file name is required. Compressed file name if not specified is `default_c
 
 Compressed file name is required. Decompressed file name if not specified is `default_decompressed`.
 
-### Tests
+## Tests
 ```sh
 make test-all
 ```
+
+## Examples
+
+Run these commands in the project directory
+
+```sh
+./huffman -c sample_test.txt
+./huffman -d default_compressed
+diff default_decompressed sample_test.txt
+```
+
 ## Authors
 
 * [Trung Truong](https://github.com/ttrung149)
