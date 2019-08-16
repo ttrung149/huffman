@@ -16,7 +16,7 @@
 #include "../include/utils.h"
 
 int main() {
-    FILE *infile = fopen("tests/test_utils_sample.txt", "rb");
+    FILE *infile = fopen("tests/utils_sample_test.txt", "rb");
 
     int freq_array_length = 0;
     int *_freq_array = get_frequency_of_characters_from_file(infile, &freq_array_length);
@@ -30,25 +30,25 @@ int main() {
     Array_T encoding = Huffman_tree_create_encoding_table(huffman_tree);
     
     // Compress sample file to test_compressed
-    FILE *outfile = fopen("tests/test_compressed.txt", "wb");
+    FILE *outfile = fopen("tests/compressed.txt", "wb");
     write_total_num_bits(_freq_array, encoding, outfile);
     write_header(freq_array, outfile);
     write_body(encoding, infile, outfile);
     fclose(outfile);
     printf("%s \n", "DONE COMPRESSING!");
 
-    FILE *compressed = fopen("tests/test_compressed.txt", "r");
+    FILE *compressed = fopen("tests/compressed.txt", "r");
     
     // Decompress sample file to test_decompressed
     uint64_t total_num_bits = read_total_num_bits(compressed);
-
     printf("TOTAL NUM BITS: %"PRIu64" \n", total_num_bits);
+
     Array_T entries = read_header(compressed);
     Huffman_Tree_T decompressed_huffman_tree = Huffman_tree_new();
     Huffman_tree_build(decompressed_huffman_tree, entries);
     Huffman_tree_create_encoding_table(decompressed_huffman_tree);
 
-    FILE *decompressed = fopen("tests/test_decompressed.txt", "wb");
+    FILE *decompressed = fopen("tests/decompressed.txt", "wb");
     read_body(decompressed_huffman_tree, total_num_bits, compressed, decompressed);
     
     printf("%s \n", "DONE DECOMPRESSING!");
