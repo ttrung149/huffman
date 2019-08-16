@@ -11,7 +11,9 @@
 *   of implemented data structure
 *
 ****************************************************************/
-
+#include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <assert.h>
 #include <stdlib.h>
 #include "../hanson/include/array.h"
@@ -31,8 +33,8 @@ struct T
 
 /* Helper function prototypes */
 static void Huffman_tree_postorder_free(Huffman_node *root);
-static void add_leaf_to_table(Huffman_node *root,
-                              Array_T encoding, int length, uint64_t value);
+static void add_leaf_to_table(Huffman_node *root, Array_T encoding, 
+                                unsigned int length, uint64_t value);
 
 /*
  * Function:        Huffman_tree_new
@@ -46,6 +48,7 @@ T Huffman_tree_new()
 
     huffman_tree->encoding_table = NULL;
     huffman_tree->root = NULL;
+
     return huffman_tree;
 }
 
@@ -131,8 +134,8 @@ Array_T Huffman_tree_create_encoding_table(T huffman_tree)
     
     // Allocate dictionary as an array of capacity 256
     Array_T encoding = Array_new(MAX_NUM_CHAR, sizeof(Encoded_value));
-    add_leaf_to_table(huffman_tree->root, encoding, 0, 0);
 
+    add_leaf_to_table(huffman_tree->root, encoding, 0, 0);
     if (huffman_tree->encoding_table)
         Array_free(&huffman_tree->encoding_table);
     huffman_tree->encoding_table = encoding;
@@ -141,8 +144,8 @@ Array_T Huffman_tree_create_encoding_table(T huffman_tree)
 }
 
 // Helper function to add leaf node to encoding table
-static void add_leaf_to_table(Huffman_node *root,
-                              Array_T encoding, int length, uint64_t value)
+static void add_leaf_to_table(Huffman_node *root, Array_T encoding, 
+                                unsigned int length, uint64_t value)
 {
     // Base case: leaf node
     if (!(root->left_node) && !(root->right_node))
@@ -151,15 +154,15 @@ static void add_leaf_to_table(Huffman_node *root,
         assert(encoded_val);
         encoded_val->bit_value = value;
         encoded_val->bit_length = length;
+
+        // printf("Bit value: %"PRIu64", Bit length: %d\n", value, length);
         Array_put(encoding, (int)(root->key), encoded_val);
         free(encoded_val);
         return;
     }
     // Recursively calculate encoding value til leave node is reached
-    add_leaf_to_table(root->left_node, encoding,
-                      length + 1, value << 1);
-    add_leaf_to_table(root->right_node, encoding,
-                      length + 1, (value << 1) + 0x1);
+    add_leaf_to_table(root->left_node, encoding, length + 1, value << 1);
+    add_leaf_to_table(root->right_node, encoding, length + 1, (value << 1) + 0x1);
 }
 
 /*
