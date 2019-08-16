@@ -59,6 +59,10 @@ clean:
 ################################################################# 
 #					TESTING targets
 ################################################################# 
+test-all: 	test-priority-queue \
+			test-huffman-tree \
+			test-bitpack \
+			test-utils
 
 test-priority-queue: $(PRIORITY_QUEUE) tests/test_priority_queue.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)

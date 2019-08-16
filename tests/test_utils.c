@@ -7,7 +7,8 @@
 *   Description: Test driver for utils module
 *
 ****************************************************************/
-
+#include <stdint.h>
+#include <inttypes.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,13 +35,14 @@ int main() {
     write_header(freq_array, outfile);
     write_body(encoding, infile, outfile);
     fclose(outfile);
+    printf("%s \n", "DONE COMPRESSING!");
 
     FILE *compressed = fopen("tests/test_compressed.txt", "r");
     
     // Decompress sample file to test_decompressed
     uint64_t total_num_bits = read_total_num_bits(outfile);
 
-    printf("TOTAL NUM BITS: %llu \n", total_num_bits);
+    printf("TOTAL NUM BITS: %"PRIu64" \n", total_num_bits);
     Array_T entries = read_header(outfile);
     Huffman_Tree_T decompressed_huffman_tree = Huffman_tree_new();
     Huffman_tree_build(decompressed_huffman_tree, entries);
@@ -49,6 +51,7 @@ int main() {
     FILE *decompressed = fopen("tests/test_decompressed.txt", "wb");
     read_body(decompressed_huffman_tree, total_num_bits, compressed, decompressed);
     
+    printf("%s \n", "DONE DECOMPRESSING!");
     fclose(compressed);
     fclose(decompressed);
 

@@ -15,8 +15,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../hanson/include/array.h"
-#include "../hanson/include/arrayrep.h"
 #include "../hanson/include/except.h"
 #include "../include/priority_queue.h"
 

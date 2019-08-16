@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 #include "../hanson/include/array.h"
+#include "../hanson/include/arrayrep.h"
 
 #ifndef PRIORITY_QUEUE_INCLUDED
 #define PRIORITY_QUEUE_INCLUDED

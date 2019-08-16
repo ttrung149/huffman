@@ -10,8 +10,8 @@
 *   See comments on top of each function to understand the interface
 *
 ****************************************************************/
-#include <stdint.h>
-#include <inttypes.h>
+// #include <stdint.h>
+// #include <inttypes.h>
 #include <assert.h>
 #include "../include/priority_queue.h"
 #include "../include/huffman_tree.h"
@@ -219,50 +219,60 @@ void write_body(Array_T encoding, FILE *infile, FILE *outfile)
 {
     assert(infile && outfile && encoding);
     uint64_t word = 0;
-    unsigned int current_lsb = 64;
-
+    unsigned int current_lsb = SIZE_OF_UINT64_IN_BITS;
     int c = 0;
     Encoded_value *curr = NULL;
 
     while (1)
     {
+        // Iterate through each character until uint64_bit word is filled to capacity
         while ((c = fgetc(infile)) != EOF)
         {
             curr = (Encoded_value *)Array_get(encoding, c);
-
+            // If there's not enough space (filled to capacity), break out of the loop
             if (current_lsb < curr->bit_length)
                 break;
-
+            // Pack bit to uint64_t word
             current_lsb -= curr->bit_length;
             word = Bitpack_newu(word, curr->bit_length, current_lsb, curr->bit_value);
         }
 
+        // Breaks out of the loop if end of file
         if (c == EOF)
         {
             fwrite(&word, sizeof(uint64_t), 1, outfile);
-            break;
+            return;
         }
+        // If there are remaining bits to be filled in previous uint64_t word
         else if (current_lsb > 0)
         {
+            // Divide current bit word into 2 halves: front and back,
+            // where front will be packed with previous uint64_t word,
+            // and back will be packed with new uint64_t word
             unsigned int back_bits_len = curr->bit_length - current_lsb;
 
+            // Divide current bits into 2 halves
             uint64_t front_bits = curr->bit_value >> back_bits_len;
             uint64_t back_bits = (curr->bit_value << (64 - back_bits_len)) >> (64 - back_bits_len);
 
+            // Pack front bits and write to file
             word = Bitpack_newu(word, current_lsb, 0, front_bits);
             fwrite(&word, sizeof(uint64_t), 1, outfile);
+
+            // Pack back bits to new word
             word = 0;
-            current_lsb = 64 - back_bits_len;
+            current_lsb = SIZE_OF_UINT64_IN_BITS - back_bits_len;
             word = Bitpack_newu(word, back_bits_len, current_lsb, back_bits);
         }
+        // If there is no space left to be packed for previous uint64_t word
         else
         {
+            // write word to file
             fwrite(&word, sizeof(uint64_t), 1, outfile);
-            current_lsb = 64 - curr->bit_length;
+            current_lsb = SIZE_OF_UINT64_IN_BITS - curr->bit_length;
             word = Bitpack_newu(word, curr->bit_length, current_lsb, curr->bit_value);
         }
     }
-    // fwrite(&word, sizeof(uint64_t), 1, outfile);
 }
 
 /*
@@ -276,38 +286,34 @@ void write_body(Array_T encoding, FILE *infile, FILE *outfile)
  */
 void read_body(Huffman_Tree_T encoding, uint64_t total_num_bits, FILE *infile, FILE *outfile)
 {
-    (void)outfile;
     assert(infile && outfile && encoding);
     Huffman_node *root = Huffman_tree_get_root(encoding);
-
     Huffman_node *curr = root;
-    (void)curr;
-
     uint64_t word = 0;
 
+    // Iterate through all encoded bits
     for (uint64_t i = 0; i < total_num_bits; i++)
     {
         int j = i % 64 + 1;
+
+        // Read in new word after 64 bits are read
         if (j == 1)
-        {
             fread(&word, sizeof(uint64_t), 1, infile);
-            // continue;
+
+        uint64_t first_bit = Bitpack_getu(word, 1, 64 - j);
+        
+        // Travese through the Huffman encoding tree based on
+        // bit read from encoded file
+        if (first_bit == 0 && curr->left_node)
+            curr = curr->left_node;
+        else if (first_bit == 1 && curr->right_node)
+            curr = curr->right_node;
+        
+        // Write to file if reached the leaf of Huffman tree
+        if (!curr->left_node && !curr->right_node)
+        {
+            fputc(curr->key, outfile);
+            curr = root;
         }
-        // else
-        // {
-            uint64_t first_bit = Bitpack_getu(word, 1, 64 - j);
-            
-            if (first_bit == 0 && curr->left_node)
-                curr = curr->left_node;
-            else if (first_bit == 1 && curr->right_node)
-                curr = curr->right_node;
-                
-            if (!curr->left_node && !curr->right_node)
-            {
-                printf("%c", curr->key);
-                curr = root;
-            }
-        // }
     }
-    // printf("%c", '\n');
 }
