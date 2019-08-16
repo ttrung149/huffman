@@ -12,6 +12,8 @@
 *
 ****************************************************************/
 
+#include <stdint.h>
+#include <inttypes.h>
 #include "../hanson/include/array.h"
 
 #ifndef HUFFMAN_TREE_INCLUDED

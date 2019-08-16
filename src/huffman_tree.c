@@ -12,8 +12,6 @@
 *
 ****************************************************************/
 #include <stdio.h>
-#include <stdint.h>
-#include <inttypes.h>
 #include <assert.h>
 #include <stdlib.h>
 #include "../hanson/include/array.h"
